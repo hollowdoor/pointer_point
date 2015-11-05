@@ -19,6 +19,9 @@ function Point(element){
     window.addEventListener('mousemove', onMove, false);
     this.root.addEventListener('mouseup', onUp, false);
 
+    this.root.addEventListener('touchstart', onDown, false);
+    window.addEventListener('touchmove', onMove, false);
+    this.root.addEventListener('touchend', onUp, false);
 
     function onDown(e){
         self.down = true;
@@ -29,6 +32,9 @@ function Point(element){
     function onMove(e){
         toPoint(e);
         self.emitter.emit('move', e);
+        if(self.down){
+            self.emitter.emit('stroke', e);
+        }
     }
 
     function onUp(e){
@@ -41,6 +47,15 @@ function Point(element){
         var dot, eventDoc, doc, body, pageX, pageY;
 
         event = event || window.event; // IE-ism
+        //Supporting touch
+        //http://www.creativebloq.com/javascript/make-your-site-work-touch-devices-51411644
+        if(event.targetTouches) {
+            event.pageX = e.targetTouches[0].clientX;
+            event.pageY = e.targetTouches[0].clientY;
+
+            e.stopPropagation();
+            e.preventDefault();
+        }else
 
         // If pageX/Y aren't available and clientX/Y are,
         // calculate pageX/Y - logic taken from jQuery.
@@ -95,6 +110,10 @@ function Point(element){
         this.root.removeEventListener('mousedown', onDown, false);
         window.removeEventListener('mousemove', onMove, false);
         this.root.removeEventListener('mouseup', onUp, false);
+
+        this.root.removeEventListener('touchstart', onDown, false);
+        window.removeEventListener('touchmove', onMove, false);
+        this.root.removeEventListener('touchend', onUp, false);
     };
 }
 

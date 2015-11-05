@@ -29,15 +29,16 @@ Usage
     var pointer = require('../index');
     var point = pointer(document.querySelector('div'));
     point.on('move', function(e){
+        //Every movement is tracked.
         console.log('point.x '+point.x);
         console.log('point.y '+point.y);
         console.log('point.down '+point.down);
     });
     point.on('down', function(e){
-
+        //Do something when the pointer is down.
     });
     point.on('up', function(e){
-
+        //Do something when the pointer is up.
     });
     </script>
 </body>
@@ -54,6 +55,16 @@ Pass an element, or selector for an element, and get a point in return.
 Methods
 -------
 
+### point.destroy
+
+Use destroy to remove all tracking of the pointer. Useful if you don't need the reference to the element, or it's pointer anymore.
+
+```javascript
+point.destroy();
+point = null;
+//Garbage collection is coming up.
+```
+
 ### point.on
 
 Add events.
@@ -62,24 +73,17 @@ Add events.
 
 Remove events.
 
-### point.x
-
-Read only x coordinate of the pointer.
-
-### point.y
-
-Read only y coordinate of the pointer.
-
-### point.pos
-
-An internal reference to the point position.
-
 Events
 ------
 
 -	move
 -	down
 -	up
+-	stroke
+
+The `move` event is used for the whole viewport. Not just the element you choose. This is useful for when you still need to track events when the pointer leaves the element.
+
+The `stroke` event is fired only when the mouse is down. On a touch interface `move`, and `stroke` are pretty much the same. `stroke` is also emitted for the whole viewport.
 
 Properties
 ----------
@@ -96,9 +100,19 @@ Is the pointer up?
 
 The element passed to the factory constructor.
 
+### point.x
+
+Read only x coordinate of the pointer.
+
+### point.y
+
+Read only y coordinate of the pointer.
+
+### point.pos
+
+An internal reference to the point position.
+
 Caveats
 -------
 
-Internally pointer-point uses events to track pointer position so until the cursor is moved there will be no position.
-
-At this time only mouse positions are tracked. For touch most browsers fire mouse events as well so this module could, or should work on most touch devices.
+Internally pointer-point uses events to track pointer position so until the cursor is moved, or there is a touch there will be no x/y positions. This shouldn't be a problem in most situations.
