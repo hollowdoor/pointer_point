@@ -30,10 +30,10 @@ var pointer = require('pointer-point'), divs = document.querySelectorAll('div');
 //All of the div elements are added to the pointer.
 var point = pointer(divs);
 //Change the color for any of the divs depending on events.
-point.on('down', function(current, origin){
+point.on('down', function(current, rect){
     current.style.backgroundColor = 'red';
 });
-point.on('move', function(current, origin){
+point.on('move', function(current, rect){
     if(this.inside(divs[2])){
         //Check some stuff when over the second div..
         console.log('this.h '+this.h);
@@ -41,13 +41,13 @@ point.on('move', function(current, origin){
         console.log('this.speedX '+this.speedX);
     }
 });
-point.on('up', function(current, origin){
+point.on('up', function(current, rect){
     current.style.backgroundColor = 'violet';
 });
-point.on('leave', function(current, origin){
+point.on('leave', function(current, rect){
     current.style.backgroundColor = 'violet';
 });
-point.on('enter', function(current, origin){
+point.on('enter', function(current, rect){
     current.style.backgroundColor = 'blue';
     //Sometimes origin is set to null.
     if(this.down && origin){
@@ -55,7 +55,7 @@ point.on('enter', function(current, origin){
         origin.style.backgroundColor = 'green';
     }
 });
-point.on('stroke', function(current, origin){
+point.on('stroke', function(current, rect){
     console.log('stroke');
 });
 
@@ -106,13 +106,26 @@ Remove an event with the specified listener function.
 Event listener
 --------------
 
-### listener(current, origin)
+### listener(current, rect)
 
 All events receive the current element the pointer is over, when the pointer is down.
 
-All events receive the original element where the pointer was down first.
+`rect` is an object that represents the current dismensions of the `current` element.
 
-current, or origin can be null depending on the situation.
+`rect` has the properties of element.getBoundingClientRect(), plus the additional x,y properties which may, or may not be available in certain environments. These are the properties of rect:
+
+-	top
+-	right
+-	bottom
+-	left
+-	height
+-	width
+-	x
+-	y
+
+See [mozilla](https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIDOMClientRect) for more.
+
+The arguments current, or rect can be null depending on the situation.
 
 Events
 ------
