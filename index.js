@@ -70,7 +70,7 @@ function Point(elements){
 
     function onMove(e){
         toPoint(e);
-        self.emitter.emit('move', this.target, local);
+        self.emitter.emit('move', self.current, local);
     }
 
     function onUp(e){
