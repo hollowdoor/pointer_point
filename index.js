@@ -91,7 +91,7 @@ function Point(elements){
         event = event || window.event; // IE-ism
         target = event.target || event.srcElement;
 
-        if(target !== self.current){
+        if(target !== self.current && self.outside(self.current)){
             for(var i=0; i<el.length; i++){
                 if(el[i] === target){
                     newTarget = target;
