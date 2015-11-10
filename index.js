@@ -275,13 +275,11 @@ Point.prototype = {
     constructor: Point,
     inside: function(el){
         if(!el) throw new TypeError('Cannot be inside '+el);
-        if(elementFromPoint(self.x, self.y) === el) return true;
         return !this.outside(el);
     },
     outside: function(el){
         var rect;
         if(!el) throw new TypeError('Cannot be outside '+el);
-        if(elementFromPoint(self.x, self.y) !== el) return true;
         rect = el.getBoundingClientRect();
         return (this.y > rect.top-1 || this.y < rect.bottom+1 ||
             this.x > rect.left-1 || this.y < rect.right+1);
