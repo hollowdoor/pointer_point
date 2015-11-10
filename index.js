@@ -91,19 +91,22 @@ function Point(elements){
         event = event || window.event; // IE-ism
         target = event.target || event.srcElement;
 
-        if(target !== self.current && self.outside(self.current)){
-            for(var i=0; i<el.length; i++){
-                if(el[i] === target){
-                    newTarget = target;
-                    break;
+        if(target !== self.current){
+            if(self.current === null || self.outside(self.current)){
+                for(var i=0; i<el.length; i++){
+                    if(el[i] === target){
+                        newTarget = target;
+                        break;
+                    }
+                }
+
+                leaving = self.current;
+                if(newTarget){
+                    self.previous = self.current;
+                    self.current = newTarget;
                 }
             }
 
-            leaving = self.current;
-            if(newTarget){
-                self.previous = self.current;
-                self.current = newTarget;
-            }
         }
 
         rect = self.current ? self.current.getBoundingClientRect() : null;
