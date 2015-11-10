@@ -79,7 +79,7 @@ function Point(elements){
         if(self.current){
             self.emitter.emit('up', self.current, local);
         }
-        self.current = null;
+        //self.current = null;
         self.previous = null;
         self.origin = null;
     }
@@ -90,26 +90,6 @@ function Point(elements){
 
         event = event || window.event; // IE-ism
         target = event.target || event.srcElement;
-
-        if(target !== self.current){
-            if(self.current === null || self.outside(self.current)){
-                for(var i=0; i<el.length; i++){
-                    if(el[i] === target){
-                        newTarget = target;
-                        break;
-                    }
-                }
-
-                leaving = self.current;
-                if(newTarget){
-                    self.previous = self.current;
-                    self.current = newTarget;
-                }
-            }
-
-        }
-
-        rect = self.current ? self.current.getBoundingClientRect() : null;
 
         //Supporting touch
         //http://www.creativebloq.com/javascript/make-your-site-work-touch-devices-51411644
@@ -155,9 +135,25 @@ function Point(elements){
         pos.x = event.pageX;// - rect.left
         pos.y = event.pageY;// - rect.top;
 
-        local = rect ? new LocalDimensions(self, rect) : {};
+        if(self.current === null || self.outside(self.current)){
+            for(var i=0; i<el.length; i++){
+                if(el[i] === target){
+                    newTarget = target;
+                    break;
+                }
+            }
 
-        if(leaving && self.outside(leaving)){
+            leaving = self.current;
+            if(newTarget){
+                self.previous = self.current;
+                self.current = newTarget;
+            }
+        }
+
+        rect = self.current ? self.current.getBoundingClientRect() : null;
+        local = rect ? new LocalDimensions(self, rect) : null;
+
+        if(leaving){
             if(!newTarget)
                 self.current = null;
             self.emitter.emit('leave', leaving, local);
@@ -278,14 +274,13 @@ Point.prototype = {
     constructor: Point,
     inside: function(el){
         if(!el) throw new TypeError('Cannot be inside '+el);
-        return !this.outside(el);
+        var rect = el.getBoundingClientRect();
+        return (this.y > rect.top && this.y < rect.bottom &&
+                this.x > rect.left && this.x < rect.right);
     },
     outside: function(el){
-        var rect;
         if(!el) throw new TypeError('Cannot be outside '+el);
-        rect = el.getBoundingClientRect();
-        return (this.y > rect.top-1 || this.y < rect.bottom+1 ||
-            this.x > rect.left-1 || this.y < rect.right+1);
+        return !this.inside(el);
     },
     on: function(event, cb){
         this.emitter.on(event, cb);

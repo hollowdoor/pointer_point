@@ -1,21 +1,24 @@
 {
-  "name": "pointer-point",
-  "version": "2.0.3",
-  "description": "Track the point of a pointer",
-  "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "pointer",
-    "coordinates"
-  ],
-  "author": "Quentin Engles <hollowdoor99@gmail.com>",
-  "license": "MIT",
-  "dependencies": {
-    "more-events": "^1.2.0"
-  }
+    "name": "pointer-point",
+    "version": "2.0.3",
+    "description": "Track the point of a pointer",
+    "main": "index.js",
+    "directories": {
+        "test": "test"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "pointer",
+        "coordinates"
+    ],
+    "author": "Quentin Engles <hollowdoor99@gmail.com>",
+    "license": "MIT",
+    "dependencies": {
+        "more-events": "^1.2.0"
+    },
+    "jshintConfig": {
+        "asi": true
+    }
 }
