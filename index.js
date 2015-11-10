@@ -71,6 +71,9 @@ function Point(elements){
     function onMove(e){
         toPoint(e);
         self.emitter.emit('move', self.current, local);
+        if(self.down && self.current){
+            self.emitter.emit('stroke', self.current, local);
+        }
     }
 
     function onUp(e){
@@ -157,15 +160,10 @@ function Point(elements){
             if(!newTarget)
                 self.current = null;
             self.emitter.emit('leave', leaving, local);
-
         }
 
         if(newTarget){
             self.emitter.emit('enter', self.current, local);
-        }
-
-        if(self.down && self.current){
-            self.emitter.emit('stroke', self.current, local);
         }
 
     }
