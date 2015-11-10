@@ -140,8 +140,10 @@ function Point(elements){
 
         if(self.current === null || self.outside(self.current)){
             for(var i=0; i<el.length; i++){
-                if(el[i] === target){
-                    newTarget = target;
+                //console.log('inside el['+i+'] '+self.inside(el[i]));
+                if(el[i] === target || self.inside(el[i])){
+                //if(el[i] === target){
+                    newTarget = el[i];
                     break;
                 }
             }
