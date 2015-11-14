@@ -99,7 +99,8 @@ function Point(elements){
         if(event.targetTouches) {
             event.pageX = e.targetTouches[0].clientX;
             event.pageY = e.targetTouches[0].clientY;
-
+            event.clientX = e.targetTouches[0].clientX;
+            event.clientY = e.targetTouches[0].clientY;
             e.stopPropagation();
             e.preventDefault();
         }else
@@ -135,8 +136,10 @@ function Point(elements){
         }
 
         pos = {};
-        pos.x = event.pageX;// - rect.left
-        pos.y = event.pageY;// - rect.top;
+        //Prefer the viewport with clientX, and clientY.
+        //pageX, and pageY change too often.
+        pos.x = event.clientX;//event.pageX;
+        pos.y = event.clientY;//event.pageY;
 
         if(self.current === null || self.outside(self.current)){
             for(var i=0; i<el.length; i++){
