@@ -158,7 +158,7 @@ function Point(elements){
             }
         }
 
-        rect = self.current ? self.current.getBoundingClientRect() : null;
+        rect = self.current ? getRect(self.current) : null;
         local = rect ? new LocalDimensions(self, rect) : null;
 
         if(leaving){
@@ -277,7 +277,7 @@ Point.prototype = {
     constructor: Point,
     inside: function(el){
         if(!el) throw new TypeError('Cannot be inside '+el);
-        var rect = el.getBoundingClientRect();
+        var rect = getRect(el);
         return (this.y > rect.top && this.y < rect.bottom &&
                 this.x > rect.left && this.x < rect.right);
     },
@@ -306,6 +306,22 @@ function safeObject(src){
     for(var n in src)
         obj[n] = src[n];
     return obj;
+}
+
+function getRect(el){
+    if(el === window){
+        return {
+            top: 0,
+            left: 0,
+            right: window.innerWidth,
+            bottom: window.innerHeight,
+            width: window.innerWidth,
+            height: window.innerHeight
+        };
+
+    }else{
+        return el.getBoundingClientRect();
+    }
 }
 
 module.exports = function(element){
