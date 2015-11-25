@@ -49,11 +49,6 @@ point.on('leave', function(current, rect){
 });
 point.on('enter', function(current, rect){
     current.style.backgroundColor = 'blue';
-    //Sometimes origin is set to null.
-    if(this.down && origin){
-        //The pointer is down.
-        origin.style.backgroundColor = 'green';
-    }
 });
 point.on('stroke', function(current, rect){
     console.log('stroke');
