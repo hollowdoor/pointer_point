@@ -13,7 +13,9 @@ function LocalDimensions(point, rect){
 
     function setProp(self, name, value){
         Object.defineProperty(self, name, {
-            value: value
+            value: value,
+            configurable: true,
+            writable: false
         });
     }
 }
