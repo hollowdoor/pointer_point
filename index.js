@@ -99,12 +99,12 @@ function Point(elements){
         //Supporting touch
         //http://www.creativebloq.com/javascript/make-your-site-work-touch-devices-51411644
         if(event.targetTouches) {
-            event.pageX = e.targetTouches[0].clientX;
-            event.pageY = e.targetTouches[0].clientY;
-            event.clientX = e.targetTouches[0].clientX;
-            event.clientY = e.targetTouches[0].clientY;
-            e.stopPropagation();
-            e.preventDefault();
+            event.pageX = event.targetTouches[0].clientX;
+            event.pageY = event.targetTouches[0].clientY;
+            event.clientX = event.targetTouches[0].clientX;
+            event.clientY = event.targetTouches[0].clientY;
+            event.stopPropagation();
+            event.preventDefault();
         }else
 
         // If pageX/Y aren't available and clientX/Y are,
