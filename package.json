@@ -1,6 +1,6 @@
 {
     "name": "pointer-point",
-    "version": "2.1.13",
+    "version": "2.1.14",
     "description": "Track the point of a pointer",
     "main": "index.js",
     "directories": {

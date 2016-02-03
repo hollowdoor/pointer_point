@@ -96,10 +96,6 @@ function Point(elements){
         if(self.current){
             self.emitter.emit('up', self.current, local);
         }
-        //self.current = null;
-        self.previous = null;
-        self.origin = null;
-
         if(e.targetTouches){
             //Allow click within buf. A 20x20 square.
             if(!(self.y > (startY - buf) && self.y < (startY + buf) &&
@@ -107,12 +103,20 @@ function Point(elements){
                 //If there is scrolling there was a touch flick.
                 if(!scrolling){
                     //No touch flick so
-                    e.preventDefault();
-                    scrolling = false;
-                    return false;
+                    if(self.origin !== e.target){
+                        self.previous = null;
+                        self.origin = null;
+                        e.preventDefault();
+                        return false;
+                    }
+
                 }
             }
         }
+
+        scrolling = false;
+        self.previous = null;
+        self.origin = null;
     }
 
     function toPoint(event){
