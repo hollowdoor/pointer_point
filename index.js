@@ -103,12 +103,10 @@ function Point(elements){
                 //If there is scrolling there was a touch flick.
                 if(!scrolling){
                     //No touch flick so
-                    if(self.origin !== e.target){
-                        self.previous = null;
-                        self.origin = null;
-                        e.preventDefault();
-                        return false;
-                    }
+                    self.previous = null;
+                    self.origin = null;
+                    e.preventDefault();
+                    return false;
 
                 }
             }
