@@ -42,7 +42,8 @@ function Point(elements){
     }
 
     var pos = {}, direction = {}, rect, local,
-        lastmousex=-1, lastmousey=-1, timestamp, mousetravel = 0;
+        lastmousex=-1, lastmousey=-1, timestamp, mousetravel = 0,
+        startX=-1, startY=-1, scrolling = false, buf = 10, timeOut = false;
 
     this.emitter = new Emitter(this);
 
@@ -58,6 +59,14 @@ function Point(elements){
     window.addEventListener('touchmove', onMove, false);
     window.addEventListener('touchend', onUp, false);
 
+    window.addEventListener('scroll', function(e){
+        scrolling = true;
+        clearTimeout(timeOut)
+        timeOut = setTimeout(function(){
+            scrolling = false;
+        }, 100)
+    });
+
     function onDown(e){
 
         toPoint(e);
@@ -67,6 +76,9 @@ function Point(elements){
             self.origin = self.current;
             self.emitter.emit('down', self.current, local);
         }
+
+        startX = self.x;
+        startY = self.y;
 
     }
 
@@ -87,6 +99,20 @@ function Point(elements){
         //self.current = null;
         self.previous = null;
         self.origin = null;
+
+        if(e.targetTouches){
+            //Allow click within buf. A 20x20 square.
+            if(!(self.y > (startY - buf) && self.y < (startY + buf) &&
+                    self.x > (startX - buf) && self.x < (startX + buf))){
+                //If there is scrolling there was a touch flick.
+                if(!scrolling){
+                    //No touch flick so
+                    e.preventDefault();
+                    scrolling = false;
+                    return false;
+                }
+            }
+        }
     }
 
     function toPoint(event){
@@ -103,8 +129,6 @@ function Point(elements){
             event.pageY = event.targetTouches[0].clientY;
             event.clientX = event.targetTouches[0].clientX;
             event.clientY = event.targetTouches[0].clientY;
-            event.stopPropagation();
-            event.preventDefault();
         }else
 
         // If pageX/Y aren't available and clientX/Y are,
