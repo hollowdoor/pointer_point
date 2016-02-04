@@ -129,7 +129,7 @@ The term **pointer** refers to a mouse, or touch.
 
 The term **mutual** means an event is dependent on if the pointer is over one of the elements.
 
-Non-mutual events will sometimes have their `current`, `origin` arguments set to null if the pointer is not over an element. Some mutual events will get this effect too depending on where in the DOM the event fired.
+Non-mutual events will sometimes have their `current`, `rect` arguments set to null if the pointer is not over an element. Some mutual events will get this effect too depending on where in the DOM the event fired.
 
 This behavior of mutual events is hard to explain, but it is consistent so you shouldn't have a problem figuring out when this is applicable. **mutual** behavior is much like how traditional mouse events work except for the rect argument which only gets passed on `down`, or `enter` if the pointer went down on one of the elements passed to the constructor.
 
