@@ -90,9 +90,15 @@ Is this point outside of the element?
 
 Add one element, or one element from a selector to the instance.
 
-### on(event, listener)
+### on(event, data|listener, listener)
 
 Add an event to the point with a listener function.
+
+The third argument is optional.
+
+Some events use the data argument. When passing data you should also pass a callback in the third argument.
+
+Look at the Events documentation to learn more about the data argument.
 
 ### off(event, listener)
 
@@ -158,6 +164,29 @@ The pointer enters one of the elements. **mutual**
 The pointer is down, moving, and over one of the elements. **mutual**
 
 `stroke` can fire after `down`, and `enter`.
+
+### hold
+
+`hold` uses the data argument. `hold` fires when the pointer is up after it has been down a certain time.
+
+The default time is **two seconds**, or **2000 milliseconds**.
+
+The hold examples:
+
+```javascript
+point.on('hold', function(element, rect){
+    //Stuff
+});
+```
+
+Or you can specify a **hold time** in **milliseconds**.
+
+```javascript
+//hold for 3 seconds.
+point.on('hold', 3000, function(element, rect){
+    //Stuff
+});
+```
 
 Instance Properties
 -------------------

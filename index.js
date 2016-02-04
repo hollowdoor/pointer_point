@@ -4,6 +4,8 @@ git remote add origin https://github.com/hollowdoor/pointer_point.git
 git push -u origin master
 */
 
+if(!Date.now){ Date.now = function(){ return new Date().getTime() } }
+
 function LocalDimensions(point, rect){
     for(var n in rect)
         setProp(this, n, rect[n]);
@@ -43,7 +45,12 @@ function Point(elements){
 
     var pos = {}, direction = {}, rect, local,
         lastmousex=-1, lastmousey=-1, timestamp, mousetravel = 0,
-        startX=-1, startY=-1, scrolling = false, buf = 10, timeOut = false;
+        startX=-1, startY=-1, scrolling = false, buf = 10, timeOut = false,
+        downTime;
+
+    var special = {
+        hold: []
+    };
 
     this.emitter = new Emitter(this);
 
@@ -69,6 +76,8 @@ function Point(elements){
 
     function onDown(e){
 
+        downTime = Date.now();
+
         toPoint(e);
         self.down = true;
         self.up = false;
@@ -93,9 +102,11 @@ function Point(elements){
     function onUp(e){
         self.down = false;
         self.up = true;
+
         if(self.current){
             self.emitter.emit('up', self.current, local);
         }
+
         if(e.targetTouches){
             //Allow click within buf. A 20x20 square.
             if(!(self.y > (startY - buf) && self.y < (startY + buf) &&
@@ -247,6 +258,56 @@ function Point(elements){
         }
     });
 
+    this.emitter.on('up', function(el, rect){
+        if(downTime){
+            for(var i=0; i<special.hold.length; i++){
+                if(Date.now() > downTime + (special.hold[i].data || 2000)){
+                    special.hold[i].callback.call(this, el, rect);
+                }
+            }
+        }
+        downTime = 0;
+    });
+
+    function removeSpecial(event, cb){
+        for(var i=0; i<special[event].length; i++){
+            if(special[event][i].callback === cb){
+                special[event].splice(i, 1);
+                return;
+            }
+        }
+    }
+
+    function addSpecial(event, data, cb){
+        if(typeof cb === 'undefined'){
+            cb = data;
+            data = null;
+        }
+
+        special[event].push({
+            data: data,
+            callback: cb
+        })
+    }
+
+    this.on = function(event, cb){
+        if(special[event]){
+            addSpecial(event, cb, arguments[2]);
+            return this;
+        }
+        this.emitter.on(event, cb);
+        return this;
+    };
+
+    this.off = function(event, cb){
+        if(special[event]){
+            removeSpecial(event, cb);
+            return this;
+        }
+        this.emitter.off(event, cb);
+        return this;
+    };
+
     this.add = function(element){
         if(typeof element === 'string'){
             try{
@@ -312,12 +373,6 @@ Point.prototype = {
     outside: function(el){
         if(!el) throw new TypeError('Cannot be outside '+el);
         return !this.inside(el);
-    },
-    on: function(event, cb){
-        this.emitter.on(event, cb);
-    },
-    off: function(event, cb){
-        this.emitter.off(event, cb);
     }
 };
 
