@@ -109,7 +109,12 @@ Event listener
 
 ### listener(current, rect)
 
-All events receive the current element the pointer is over, when the pointer is down.
+All events receive the current element the pointer is over, and when the pointer is down. If the pointer is not over an element passed to the pointer-point constructor `current` is null.
+
+rect argument
+-------------
+
+All listeners receive a `rect` argument on the current element if there is one. If the pointer is not over an element that was passed to pointer-point constructor `rect` is null.
 
 `rect` is an object that represents the current dismensions of the `current` element.
 
@@ -127,6 +132,14 @@ All events receive the current element the pointer is over, when the pointer is 
 See [mozilla](https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIDOMClientRect) for more.
 
 The arguments current, or rect can be null depending on the situation.
+
+### rect ordinal directions
+
+The rect object also has north, south, east, and west properties.
+
+These properties are oriented from the center of the current element, and are zero based.
+
+Imagine a cross hairs crossing through the center of the element.
 
 Events
 ------

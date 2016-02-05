@@ -10,8 +10,14 @@ function LocalDimensions(point, rect){
     for(var n in rect)
         setProp(this, n, rect[n]);
 
-    setProp(this, 'x', point.x - rect.left);
-    setProp(this, 'y', point.y - rect.top);
+    setProp(this, 'x', point.x - rect.left+1);
+    setProp(this, 'y', point.y - rect.top+1);
+
+    setProp(this, 'north', (((rect.bottom - rect.top) / 2)-this.y));
+    setProp(this, 'south', ((-(rect.bottom - rect.top) / 2)+this.y));
+    setProp(this, 'east', (((rect.right - rect.left) / 2)-this.x));
+    setProp(this, 'west', ((-(rect.right - rect.left) / 2)+this.x));
+
 
     function setProp(self, name, value){
         Object.defineProperty(self, name, {
