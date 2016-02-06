@@ -145,7 +145,7 @@ Each direction is positive, or negative depending on which **quandrant** of a DO
 
 ![Directions](images/directions1.png)
 
-For instance crossing above the horizontal line makes `north` negative. Crossing above makes `north` positive. The numbers are the reverse for south. At the horizontal line south, and north are zero.
+For instance crossing below the horizontal line makes `north` negative. Crossing above makes `north` positive. The numbers are the reverse for south. At the horizontal line south, and north are zero.
 
 These **directions** can be used for controls that might need specific vectors. This can be helpful for things like pointer movements relative to the center of the element, and finding the positions of elements relative to the current element under the pointer.
 
