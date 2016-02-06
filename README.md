@@ -133,13 +133,21 @@ See [mozilla](https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Refere
 
 The arguments current, or rect can be null depending on the situation.
 
-### rect ordinal directions
+### rect directions
 
 The rect object also has north, south, east, and west properties.
 
 These properties are oriented from the center of the current element, and are zero based.
 
-Imagine a cross hairs crossing through the center of the element.
+Each direction has it's own number line.
+
+Each direction is positive, or negative depending on which **quandrant** of a DOM element the pointer (mouse or touch) of **pointer-point** is in. Here is an image showing how the number lines work for these directions.
+
+![Directions](images/directions1.png)
+
+For instance crossing above the horizontal line makes `north` negative. Crossing above makes `north` positive. The numbers are the reverse for south. At the horizontal line south, and north are zero.
+
+These **directions** can be used for controls that might need specific vectors. This can be helpful for things like pointer movements relative to the center of the element, and finding the positions of elements relative to the current element under the pointer.
 
 Events
 ------
