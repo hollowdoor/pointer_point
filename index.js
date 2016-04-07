@@ -38,9 +38,9 @@ function Point(elements){
         if(elements[i] !== undefined){
             if(typeof elements[i] === 'string'){
                 try{
-                    el.push(document.querySelector(e));
+                    el.push(document.querySelector(elements[i]));
                 }catch(err){
-                    throw new Error(e + ' is not a valid selector used by pointer.');
+                    throw new Error(elements[i] + ' is not a valid selector used by pointer.');
                 }
             }else{
                 el.push(elements[i]);
