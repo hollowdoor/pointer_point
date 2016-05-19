@@ -230,6 +230,10 @@ Is the pointer down.
 
 Is the pointer up.
 
+### select
+
+Should the elements be selectable? The default for `select` is true.
+
 ### speedX
 
 The pointer speed in pixels per second in the x axis.

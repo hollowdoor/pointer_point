@@ -28,7 +28,7 @@ function LocalDimensions(point, rect){
     }
 }
 function Point(elements){
-    var self = this, el = [];
+    var self = this, el = [], targets = [];
 
     if(typeof elements.length === 'undefined'){
         elements = [elements];
@@ -60,9 +60,20 @@ function Point(elements){
 
     this.emitter = new Emitter(this);
 
+    this.select = true;
+    this.targets = [];
     this.origin = null;
     this.current = null;
     this.previous = null;
+
+    for(var i=0; i<el.length; i++){
+        if(el[i] === window){
+            this.targets.push({
+                target: window,
+                rect: null
+            });
+        }
+    }
 
     window.addEventListener('mousedown', onDown, false);
     window.addEventListener('mousemove', onMove, false);
@@ -80,6 +91,12 @@ function Point(elements){
         }, 100)
     });
 
+    function runEvents(self, eventName){
+        for(var i=0; i<self.targets.length; i++){
+            self.emitter.emit(eventName, self.targets[i].target, self.targets[i].rect);
+        }
+    }
+
     function onDown(e){
 
         downTime = Date.now();
@@ -87,9 +104,11 @@ function Point(elements){
         toPoint(e);
         self.down = true;
         self.up = false;
-        if(self.current){
+        if(self.targets.length){
             self.origin = self.current;
-            self.emitter.emit('down', self.current, local);
+            for(var i=0; i<self.targets.length; i++){
+                self.emitter.emit('down', self.targets[i].target, self.targets[i].rect);
+            }
         }
 
         startX = self.x;
@@ -98,10 +117,22 @@ function Point(elements){
     }
 
     function onMove(e){
+        if(!self.select){
+            if(document.selection){
+                document.selection.empty()
+            }else{
+                window.getSelection().removeAllRanges()
+            }
+        }
+
         toPoint(e);
-        self.emitter.emit('move', self.current, local);
-        if(self.down && self.current){
-            self.emitter.emit('stroke', self.current, local);
+        for(var i=0; i<self.targets.length; i++){
+            self.emitter.emit('move', self.targets[i].target, self.targets[i].rect);
+        }
+        if(self.down && self.targets.length){
+            for(var i=0; i<self.targets.length; i++){
+                self.emitter.emit('stroke', self.targets[i].target, self.targets[i].rect);
+            }
         }
     }
 
@@ -109,8 +140,10 @@ function Point(elements){
         self.down = false;
         self.up = true;
 
-        if(self.current){
-            self.emitter.emit('up', self.current, local);
+        if(self.targets.length){
+            for(var i=0; i<self.targets.length; i++){
+                self.emitter.emit('up', self.targets[i].target, self.targets[i].rect);
+            }
         }
 
         if(e.targetTouches){
@@ -136,7 +169,8 @@ function Point(elements){
 
     function toPoint(event){
         var dot, eventDoc, doc, body, pageX, pageY;
-        var target, newTarget = null, leaving = null;
+        var target, newTarget = null, targetTemp;
+        var last = [];
 
         event = event || window.event; // IE-ism
         target = event.target || event.srcElement;
@@ -186,35 +220,57 @@ function Point(elements){
         pos.x = event.clientX;//event.pageX;
         pos.y = event.clientY;//event.pageY;
 
-        if(self.current === null || self.outside(self.current)){
-            for(var i=0; i<el.length; i++){
-                //console.log('inside el['+i+'] '+self.inside(el[i]));
-                if(el[i] === target || self.inside(el[i])){
-                //if(el[i] === target){
-                    newTarget = el[i];
-                    break;
-                }
-            }
 
-            leaving = self.current;
-            if(newTarget){
-                self.previous = self.current;
-                self.current = newTarget;
+        last = [].concat(self.targets);
+        newTarget = target;
+        self.targets = [];
+        targetTemp = [];
+
+        for(var i=0; i<last.length; i++){
+            if(last[i].target === window){
+                targetTemp.push(window);
+            }else if(last[i].target === target){
+                newTarget = false;
+                targetTemp.push(target);
+            }else if(!self.inside(last[i].target)){
+                self.previous = last[i].target;
+                rect = getRect(last[i].target);
+                self.emitter.emit('leave', last[i].target, new LocalDimensions(self, rect));
+            }else{
+                targetTemp.push(last[i].target);
             }
         }
 
-        rect = self.current ? getRect(self.current) : null;
-        local = rect ? new LocalDimensions(self, rect) : null;
-
-        if(leaving){
-            if(!newTarget)
-                self.current = null;
-            self.emitter.emit('leave', leaving, local);
+        for(var i=0; i<targetTemp.length; i++){
+            rect = getRect(targetTemp[i]);
+            self.targets.push({
+                target: targetTemp[i],
+                rect: new LocalDimensions(self, rect)
+            });
         }
 
         if(newTarget){
-            self.emitter.emit('enter', self.current, local);
+
+            for(var i=0; i<el.length; i++){
+                if(el[i] === newTarget){
+                    self.previous = self.current;
+                    rect = getRect(target);
+                    local = new LocalDimensions(self, rect);
+                    self.targets.push({
+                        target: newTarget,
+                        rect: local
+                    });
+                    self.current = target;
+
+                    self.emitter.emit('enter', target, local);
+                }
+            }
+
         }
+
+        newTarget = null;
+        targetTemp = null;
+        last = null;
 
     }
 
